@@ -38,3 +38,42 @@ let ``Fibonnaci sequence`` () =
 let ``Problem 2: Even Fibonacci Numbers`` () =
     test <@ sumOfEvenFibonnaciTerms 55 = 44 @>
     test <@ sumOfEvenFibonnaciTerms 4_000_000 = 4613732 @>
+
+let nextPrime (n, primes) =
+    match n with
+    | 1L -> (2L, set [ 2L ])
+    | n when n > 1L ->
+        let isPrime m =
+            primes |> Set.exists (fun x -> m % x = 0L) |> not
+
+        let m = Seq.initInfinite (fun i -> n + int64 i + 1L) |> Seq.find isPrime
+
+        (m, primes |> Set.add m)
+    | _ -> invalidArg "n" "n must be positive"
+
+
+// todo 0:
+// let fp n =
+
+let h (n: int64) =
+    // sequence from (n - 1) to 0
+    match n with
+    | 1L -> 1L
+    | n when n > 1L ->
+        seq { (n / 2L) .. -1L .. 0L } |> Seq.find (fun x -> n % x = 0)
+    | _ -> invalidArg "n" "n must be positive"
+
+
+[<Fact>]
+let ``xxx`` () =
+    test <@ h 1L = 1L @>
+    test <@ h 2L = 1L @>
+    test <@ h 6L = 3L @>
+    test <@ h 10L = 5L @>
+    test <@ h 100L = 50L @>
+    test <@ h 1234567L = 9721L @>
+
+    test <@ nextPrime (1, Set.empty) = (2, set [ 2 ]) @>
+    test <@ nextPrime (2, set [ 2 ]) = (3, set [ 2; 3 ]) @>
+    test <@ nextPrime (3, set [ 2; 3 ]) = (5, set [ 2; 3; 5 ]) @>
+// test <@ h 600851475143L = 500 @>
