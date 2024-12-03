@@ -105,7 +105,6 @@ let highestPrimeOf n =
 /// </summary>
 /// <remarks>The function is faster than highestPrimeOf().</remarks>
 let rec highestPrimeOfFaster (n: int64) =
-    // sequence from (n - 1) to 0
     match n with
     | 1L -> 1L
     | 2L -> 2L
