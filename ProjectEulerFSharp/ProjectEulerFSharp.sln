@@ -5,6 +5,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Files", "Solution Files", "{7CF7BAE6-9620-45D5-9B65-B5A5F468B80B}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		..\.editorconfig = ..\.editorconfig
+		.config\dotnet-tools.json = .config\dotnet-tools.json
 	EndProjectSection
 EndProject
 Global

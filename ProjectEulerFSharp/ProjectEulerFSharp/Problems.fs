@@ -39,21 +39,42 @@ let ``Problem 2: Even Fibonacci Numbers`` () =
     test <@ sumOfEvenFibonnaciTerms 55 = 44 @>
     test <@ sumOfEvenFibonnaciTerms 4_000_000 = 4613732 @>
 
+/// <summary>
+/// Find a next prime that is greater than n.
+/// </summary>
+/// <returns>A tuple of the next prime found and a new list of primes
+/// that includes this newly found prime.</returns>
 let nextPrime (n, primes) =
     match n with
-    | 1L -> (2L, set [ 2L ])
+    | 1L -> (2L, [ 2L ])
     | n when n > 1L ->
         let isPrime m =
-            primes |> Set.exists (fun x -> m % x = 0L) |> not
+            primes |> Seq.exists (fun x -> m % x = 0L) |> not
 
         let m = Seq.initInfinite (fun i -> n + int64 i + 1L) |> Seq.find isPrime
 
-        (m, primes |> Set.add m)
+        (m, m :: primes)
     | _ -> invalidArg "n" "n must be positive"
 
 
-// todo 0:
-// let fp n =
+/// <summary>
+/// Find all primes that are less or equal than n.
+/// </summary>
+/// <remarks>
+/// If n is not a prime, the function will also include the next prime that
+/// is greater than n.
+/// </remarks>
+let findPrimesUpTo n =
+    let mutable m = 1L
+    let mutable primes = []
+
+    while m < n do
+        let m', primes' = nextPrime (m, primes)
+        m <- m'
+        primes <- primes'
+
+    primes
+
 
 let h (n: int64) =
     // sequence from (n - 1) to 0
@@ -73,7 +94,31 @@ let ``xxx`` () =
     test <@ h 100L = 50L @>
     test <@ h 1234567L = 9721L @>
 
-    test <@ nextPrime (1, Set.empty) = (2, set [ 2 ]) @>
-    test <@ nextPrime (2, set [ 2 ]) = (3, set [ 2; 3 ]) @>
-    test <@ nextPrime (3, set [ 2; 3 ]) = (5, set [ 2; 3; 5 ]) @>
+    test <@ nextPrime (1, []) = (2, [ 2 ]) @>
+    test <@ nextPrime (2, [ 2 ]) = (3, [ 3; 2 ]) @>
+    test <@ nextPrime (3, [ 3; 2 ]) = (5, [ 5; 3; 2 ]) @>
+
+    test <@ findPrimesUpTo 1L = [] @>
+    test <@ findPrimesUpTo 2L = [ 2L ] @>
+    test <@ findPrimesUpTo 3L = [ 3L; 2L ] @>
+    test <@ findPrimesUpTo 4L = [ 5L; 3L; 2L ] @>
+    test <@ findPrimesUpTo 5L = [ 5L; 3L; 2L ] @>
+
+    test
+        <@
+            findPrimesUpTo 30L = [ 31L
+                                   29L
+                                   23L
+                                   19L
+                                   17L
+                                   13L
+                                   11L
+                                   7L
+                                   5L
+                                   3L
+                                   2L ]
+        @>
+
+    test <@ findPrimesUpTo 600851475143L |> List.length = 5 @>
+
 // test <@ h 600851475143L = 500 @>
