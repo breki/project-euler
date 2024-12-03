@@ -51,7 +51,12 @@ let nextPrime (n, primes) =
         let isPrime m =
             primes |> Seq.exists (fun x -> m % x = 0L) |> not
 
-        let m = Seq.initInfinite (fun i -> n + int64 i + 1L) |> Seq.find isPrime
+        let oddNumbersAddition = if n % 2L = 0L then 1L else 2L
+
+        let m =
+            Seq.initInfinite (fun i ->
+                n + ((int64 i) * 2L) + oddNumbersAddition)
+            |> Seq.find isPrime
 
         (m, m :: primes)
     | _ -> invalidArg "n" "n must be positive"
@@ -82,7 +87,7 @@ let highestPrimeOf n =
     let mutable highestPrimeSoFar = 1L
     let mutable primes = []
 
-    while highestPrimeSoFar < n' do
+    while highestPrimeSoFar < n' && n' > 1 do
         let m', primes' = nextPrime (highestPrimeSoFar, primes)
         highestPrimeSoFar <- m'
         primes <- primes'
