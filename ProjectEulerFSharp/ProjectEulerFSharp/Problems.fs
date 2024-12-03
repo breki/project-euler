@@ -60,10 +60,6 @@ let nextPrime (n, primes) =
 /// <summary>
 /// Find all primes that are less or equal than n.
 /// </summary>
-/// <remarks>
-/// If n is not a prime, the function will also include the next prime that
-/// is greater than n.
-/// </remarks>
 let findPrimesUpTo n =
     let mutable m = 1L
     let mutable primes = []
@@ -73,7 +69,29 @@ let findPrimesUpTo n =
         m <- m'
         primes <- primes'
 
-    primes
+    if m <= n then primes else primes |> List.tail
+
+
+/// <summary>
+/// Find the highest prime that divides n.
+/// </summary>
+/// <remarks>The function is too slow.</remarks>
+let highestPrimeOf n =
+    let mutable n' = n
+
+    let mutable highestPrimeSoFar = 1L
+    let mutable primes = []
+
+    while highestPrimeSoFar < n' do
+        let m', primes' = nextPrime (highestPrimeSoFar, primes)
+        highestPrimeSoFar <- m'
+        primes <- primes'
+
+        while n' % highestPrimeSoFar = 0L do
+            n' <- n' / highestPrimeSoFar
+
+    highestPrimeSoFar
+
 
 
 let h (n: int64) =
@@ -101,24 +119,19 @@ let ``xxx`` () =
     test <@ findPrimesUpTo 1L = [] @>
     test <@ findPrimesUpTo 2L = [ 2L ] @>
     test <@ findPrimesUpTo 3L = [ 3L; 2L ] @>
-    test <@ findPrimesUpTo 4L = [ 5L; 3L; 2L ] @>
+    test <@ findPrimesUpTo 4L = [ 3L; 2L ] @>
     test <@ findPrimesUpTo 5L = [ 5L; 3L; 2L ] @>
 
     test
-        <@
-            findPrimesUpTo 30L = [ 31L
-                                   29L
-                                   23L
-                                   19L
-                                   17L
-                                   13L
-                                   11L
-                                   7L
-                                   5L
-                                   3L
-                                   2L ]
-        @>
+        <@ findPrimesUpTo 30L = [ 29L; 23L; 19L; 17L; 13L; 11L; 7L; 5L; 3L; 2L ] @>
 
-    test <@ findPrimesUpTo 600851475143L |> List.length = 5 @>
+    test <@ highestPrimeOf 1 = 1 @>
+    test <@ highestPrimeOf 2 = 2 @>
+    test <@ highestPrimeOf 3 = 3 @>
+    test <@ highestPrimeOf 4 = 2 @>
+    test <@ highestPrimeOf 30 = 5 @>
+    test <@ highestPrimeOf 35875456 = 280277L @>
+
+// test <@ findPrimesUpTo 600851475143L |> List.length = 5 @>
 
 // test <@ h 600851475143L = 500 @>
