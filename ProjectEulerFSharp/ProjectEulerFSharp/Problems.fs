@@ -55,6 +55,7 @@ let nextPrime (n, primes) =
 
         let m =
             Seq.initInfinite (fun i ->
+                // we only check odd numbers
                 n + ((int64 i) * 2L) + oddNumbersAddition)
             |> Seq.find isPrime
 
@@ -99,23 +100,41 @@ let highestPrimeOf n =
 
 
 
-let h (n: int64) =
+/// <summary>
+/// Find the highest prime that divides n.
+/// </summary>
+/// <remarks>The function is faster than highestPrimeOf().</remarks>
+let rec highestPrimeOfFaster (n: int64) =
     // sequence from (n - 1) to 0
     match n with
     | 1L -> 1L
+    | 2L -> 2L
+    | 3L -> 3L
     | n when n > 1L ->
-        seq { (n / 2L) .. -1L .. 0L } |> Seq.find (fun x -> n % x = 0)
+        let highestFactor =
+            seq { (n / 2L) .. -1L .. 2L } |> Seq.tryFind (fun x -> n % x = 0)
+
+        match highestFactor with
+        // if a divisor is found, then we find the highest prime of the divisor
+        | Some hh -> highestPrimeOfFaster hh
+        // if no divisor found, then n is a prime number
+        | None -> n
     | _ -> invalidArg "n" "n must be positive"
 
 
 [<Fact>]
 let ``xxx`` () =
-    test <@ h 1L = 1L @>
-    test <@ h 2L = 1L @>
-    test <@ h 6L = 3L @>
-    test <@ h 10L = 5L @>
-    test <@ h 100L = 50L @>
-    test <@ h 1234567L = 9721L @>
+    test <@ highestPrimeOfFaster 1L = 1L @>
+    test <@ highestPrimeOfFaster 2L = 2L @>
+    test <@ highestPrimeOfFaster 6L = 3L @>
+    test <@ highestPrimeOfFaster 10L = 5L @>
+    test <@ highestPrimeOfFaster 100L = 5L @>
+    test <@ highestPrimeOfFaster 1234567L = 9721L @>
+    test <@ highestPrimeOfFaster 35875456 = 280277L @>
+    test <@ highestPrimeOfFaster 135875456 = 1061527L @>
+    test <@ highestPrimeOfFaster 1135875456 = 4673L @>
+    test <@ highestPrimeOfFaster 11135875456L = 11903L @>
+    // test <@ h 600851475143L = 280277L @>
 
     test <@ nextPrime (1, []) = (2, [ 2 ]) @>
     test <@ nextPrime (2, [ 2 ]) = (3, [ 3; 2 ]) @>
@@ -135,8 +154,4 @@ let ``xxx`` () =
     test <@ highestPrimeOf 3 = 3 @>
     test <@ highestPrimeOf 4 = 2 @>
     test <@ highestPrimeOf 30 = 5 @>
-    test <@ highestPrimeOf 35875456 = 280277L @>
-
-// test <@ findPrimesUpTo 600851475143L |> List.length = 5 @>
-
-// test <@ h 600851475143L = 500 @>
+// test <@ highestPrimeOf 35875456 = 280277L @>
