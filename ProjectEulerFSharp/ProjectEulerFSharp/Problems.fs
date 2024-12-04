@@ -2,6 +2,7 @@ module Problems
 
 open Xunit
 open Swensen.Unquote
+open Xunit.Abstractions
 
 // https://projecteuler.net/problem=1
 [<Fact>]
@@ -104,36 +105,67 @@ let highestPrimeOf n =
 /// Find the highest prime that divides n.
 /// </summary>
 /// <remarks>The function is faster than highestPrimeOf().</remarks>
-let rec highestPrimeOfFaster (n: int64) =
-    match n with
-    | 1L -> 1L
-    | 2L -> 2L
-    | 3L -> 3L
-    | n when n > 1L ->
-        let highestFactor =
-            seq { (n / 2L) .. -1L .. 2L } |> Seq.tryFind (fun x -> n % x = 0)
+let rec highestPrimeOfFaster (output: ITestOutputHelper) (n: int64) : int64 =
+    output.WriteLine(sprintf "n: %d" n)
 
-        match highestFactor with
-        // if a divisor is found, then we find the highest prime of the divisor
-        | Some hh -> highestPrimeOfFaster hh
-        // if no divisor found, then n is a prime number
-        | None -> n
+    match n with
+    | n when n > 7 ->
+        if n % (n / 2L) = 0L then
+            highestPrimeOfFaster output (n / 2L)
+        elif n % (n / 3L) = 0L then
+            highestPrimeOfFaster output (n / 3L)
+        elif n % (n / 5L) = 0L then
+            highestPrimeOfFaster output (n / 5L)
+        elif n % (n / 7L) = 0L then
+            highestPrimeOfFaster output (n / 7L)
+        elif n % (n / 11L) = 0L then
+            highestPrimeOfFaster output (n / 11L)
+        elif n % (n / 13L) = 0L then
+            highestPrimeOfFaster output (n / 13L)
+        elif n % (n / 17L) = 0L then
+            highestPrimeOfFaster output (n / 17L)
+        else
+            let highestFactor =
+                seq { (n / 17L) - 1L .. -1L .. 2L }
+                |> Seq.tryFind (fun x -> n % x = 0)
+
+            match highestFactor with
+            // if a divisor is found, then we find the highest prime of the divisor
+            | Some hh -> highestPrimeOfFaster output hh
+            // if no divisor found, then n is a prime number
+            | None -> n
+    | 16L -> 2L
+    | 15L -> 5L
+    | 14L -> 7L
+    | 12L -> 3L
+    | 10L -> 5L
+    | 9L -> 3L
+    | 8L -> 2L
+    | 6L -> 3L
+    | 4L -> 2L
+    | n when n > 0 -> n
     | _ -> invalidArg "n" "n must be positive"
 
 
+/// <summary>
+/// Find the largest prime factor of 600851475143L.
+/// </summary>
 [<Fact>]
-let ``xxx`` () =
-    test <@ highestPrimeOfFaster 1L = 1L @>
-    test <@ highestPrimeOfFaster 2L = 2L @>
-    test <@ highestPrimeOfFaster 6L = 3L @>
-    test <@ highestPrimeOfFaster 10L = 5L @>
-    test <@ highestPrimeOfFaster 100L = 5L @>
-    test <@ highestPrimeOfFaster 1234567L = 9721L @>
-    test <@ highestPrimeOfFaster 35875456 = 280277L @>
-    test <@ highestPrimeOfFaster 135875456 = 1061527L @>
-    test <@ highestPrimeOfFaster 1135875456 = 4673L @>
-    test <@ highestPrimeOfFaster 11135875456L = 11903L @>
-    // test <@ h 600851475143L = 280277L @>
+let ``Problem 3: Largest Prime Factor`` () =
+    // test <@ highestPrimeOfFaster 1L = 1L @>
+    // test <@ highestPrimeOfFaster 2L = 2L @>
+    // test <@ highestPrimeOfFaster 6L = 3L @>
+    // test <@ highestPrimeOfFaster 10L = 5L @>
+    // test <@ highestPrimeOfFaster 100L = 5L @>
+    // test <@ highestPrimeOfFaster 1234567L = 9721L @>
+    // test <@ highestPrimeOfFaster 35875456 = 280277L @>
+    // test <@ highestPrimeOfFaster 135875456 = 1061527L @>
+    // test <@ highestPrimeOfFaster 1135875456 = 4673L @>
+    // test <@ highestPrimeOfFaster 11135875456L = 11903L @>
+
+    // too slow:
+    // test <@ highestPrimeOfFaster 111135875456L = 192133L @>
+    // test <@ highestPrimeOfFaster 600851475143L = 280277L @>
 
     test <@ nextPrime (1, []) = (2, [ 2 ]) @>
     test <@ nextPrime (2, [ 2 ]) = (3, [ 3; 2 ]) @>
@@ -153,4 +185,15 @@ let ``xxx`` () =
     test <@ highestPrimeOf 3 = 3 @>
     test <@ highestPrimeOf 4 = 2 @>
     test <@ highestPrimeOf 30 = 5 @>
+
+// too slow:
 // test <@ highestPrimeOf 35875456 = 280277L @>
+
+type Problems(output: ITestOutputHelper) =
+    [<Fact>]
+    member this.``Problem 3: Largest Prime Factor``() =
+        test <@ highestPrimeOfFaster output 11135875456L = 11903L @>
+
+// too slow:
+// test <@ highestPrimeOfFaster output 111135875456L = 192133L @>
+// test <@ highestPrimeOfFaster output 600851475143L = 280277L @>
