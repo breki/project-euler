@@ -1,7 +1,3 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
-
 /// Find the highest prime factor of a given number.
 ///
 /// The function is faster than highestPrimeOf() but it is still too slow
@@ -11,25 +7,25 @@ pub fn highest_prime_of(n: i64) -> i64 {
     match n {
         n if n > 17 => {
             if n % (n/2) == 0 {
-                return highest_prime_of(n/2);
+                highest_prime_of(n/2);
             }
             else if n % (n/3) == 0 {
-                return highest_prime_of(n/3);
+                highest_prime_of(n/3);
             }
             else if n % (n/5) == 0 {
-                return highest_prime_of(n/5);
+                highest_prime_of(n/5);
             }
             else if n % (n/7) == 0 {
-                return highest_prime_of(n/7);
+                highest_prime_of(n/7);
             }
             else if n % (n/11) == 0 {
-                return highest_prime_of(n/11);
+                highest_prime_of(n/11);
             }
             else if n % (n/13) == 0 {
-                return highest_prime_of(n/13);
+                highest_prime_of(n/13);
             }
             else if n % (n/17) == 0 {
-                return highest_prime_of(n/17);
+                highest_prime_of(n/17);
             }
             else {
                 let mut highest_factor = 0;
