@@ -9,16 +9,17 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Include="Problems.fs" />
+        <Compile Include="Problems.fs"/>
+        <Compile Include="Problem4.fs"/>
         <Compile Include="Program.fs"/>
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="coverlet.collector" Version="6.0.0"/>
-        <PackageReference Include="FsUnit" Version="6.0.1" />
-        <PackageReference Include="FsUnit.xUnit" Version="6.0.1" />
+        <PackageReference Include="FsUnit" Version="6.0.1"/>
+        <PackageReference Include="FsUnit.xUnit" Version="6.0.1"/>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0"/>
-        <PackageReference Include="Unquote" Version="7.0.1" />
+        <PackageReference Include="Unquote" Version="7.0.1"/>
         <PackageReference Include="xunit" Version="2.5.3"/>
         <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3"/>
     </ItemGroup>
