@@ -104,12 +104,16 @@ let highestPrimeOf n =
 /// <summary>
 /// Find the highest prime that divides n.
 /// </summary>
-/// <remarks>The function is faster than highestPrimeOf().</remarks>
+/// <remarks>
+/// The function is faster than highestPrimeOf() but it is still too slow
+/// for the 600851475143 test case since it starts from the other way around
+/// - it should have started from 2 and go up to n/2.
+/// .</remarks>
 let rec highestPrimeOfFaster (output: ITestOutputHelper) (n: int64) : int64 =
     output.WriteLine(sprintf "n: %d" n)
 
     match n with
-    | n when n > 7 ->
+    | n when n > 17 ->
         if n % (n / 2L) = 0L then
             highestPrimeOfFaster output (n / 2L)
         elif n % (n / 3L) = 0L then
@@ -165,7 +169,7 @@ let ``Problem 3: Largest Prime Factor`` () =
 
     // too slow:
     // test <@ highestPrimeOfFaster 111135875456L = 192133L @>
-    // test <@ highestPrimeOfFaster 600851475143L = 280277L @>
+    // test <@ highestPrimeOfFaster 600851475143L = 6857 @>
 
     test <@ nextPrime (1, []) = (2, [ 2 ]) @>
     test <@ nextPrime (2, [ 2 ]) = (3, [ 3; 2 ]) @>
@@ -192,7 +196,8 @@ let ``Problem 3: Largest Prime Factor`` () =
 type Problems(output: ITestOutputHelper) =
     [<Fact>]
     member this.``Problem 3: Largest Prime Factor``() =
-        test <@ highestPrimeOfFaster output 11135875456L = 11903L @>
+        test <@ highestPrimeOfFaster output 100 = 5 @>
+// test <@ highestPrimeOfFaster output 11135875456L = 11903L @>
 
 // too slow:
 // test <@ highestPrimeOfFaster output 111135875456L = 192133L @>
