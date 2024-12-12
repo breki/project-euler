@@ -29,17 +29,25 @@ let findSmallestPrimeDivisor n =
 
     divisor |> Option.get
 
-let div n : Set<int> =
+let divisors n : Set<int> =
     let rec div' (d: Set<int>) n : Set<int> =
         match n with
         | 1 -> d |> Set.add 1
         | n ->
             let primeDivisor = findSmallestPrimeDivisor n
-            let remaining = n / primeDivisor
-            let d' = d |> Set.add primeDivisor
+
+            let mutable divisor = primeDivisor
+            let mutable remaining = n
+            let mutable d' = d
+
+            while remaining % primeDivisor = 0 do
+                remaining <- remaining / primeDivisor
+                d' <- Set.union d' (set [ divisor; remaining ])
+                divisor <- divisor * primeDivisor
+
             div' d' remaining
 
-    div' Set.empty n
+    div' Set.empty n |> Set.add n
 
 type Problems() =
     [<Fact>]
@@ -51,7 +59,11 @@ type Problems() =
 
     [<Fact>]
     member this.``Find divisors``() =
-        test <@ div 1 = set [ 1 ] @>
-        test <@ div 2 = set [ 1; 2 ] @>
-        test <@ div 3 = set [ 1; 3 ] @>
-        test <@ div 4 = set [ 1; 2; 4 ] @>
+        test <@ divisors 1 = set [ 1 ] @>
+        test <@ divisors 2 = set [ 1; 2 ] @>
+        test <@ divisors 3 = set [ 1; 3 ] @>
+        test <@ divisors 6 = set [ 1; 2; 3; 6 ] @>
+        test <@ divisors 10 = set [ 1; 2; 5; 10 ] @>
+        test <@ divisors 15 = set [ 1; 3; 5; 15 ] @>
+        test <@ divisors 21 = set [ 1; 3; 7; 21 ] @>
+        test <@ divisors 28 = set [ 1; 2; 4; 7; 14; 28 ] @>
