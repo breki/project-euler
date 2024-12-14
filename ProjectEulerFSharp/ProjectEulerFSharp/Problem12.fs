@@ -6,8 +6,6 @@ open Swensen.Unquote
 open Problem10
 open Xunit.Abstractions
 
-type TD = { tn: int; ds: int list }
-
 /// <summary>
 /// Return the first N triangle numbers.
 /// </summary>
