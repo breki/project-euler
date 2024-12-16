@@ -1,63 +1,97 @@
 ﻿module Problem14
 
-open System
 open System.Collections.Generic
 open Xunit
 open Swensen.Unquote
 open Xunit.Abstractions
 
-let collatzSequenceLength (d: Dictionary<int, int>) n =
-    let rec c' s n =
-        match n with
-        | 1 -> s + 1
-        | n when d.ContainsKey n -> s + d[n]
+let collatzSequenceLengthRec (d: Dictionary<int, int>) (n: int32) =
+    let rec c' s (m: int64) =
+        match m with
+        | 1L -> s + 1
+        | m when m <= n && d.ContainsKey (int m) -> s + d[(int m)]
         | _ ->
-            let m =
-                if n % 2 = 0 then
-                    n / 2
+            let o: int64 =
+                if m % 2L = 0L then
+                    m / 2L
                 else
-                    3 * n + 1
+                    3L * m + 1L
 
-            let len = c' (s + 1) m
-            if d.ContainsKey n then
-                raise (InvalidOperationException(sprintf "n: %d, d[n]: %d, len: %d" n d[n] len))
-            else
-                d[n] <- len
-            len
+            c' (s + 1) o
 
     let len = c' 0 n
-
-    if d.ContainsKey n then
-        if d[n] <> len then
-            raise (InvalidOperationException())
-    else
-        d[n] <- len
-
+    d[n] <- len
     len
+
+let collatzSequenceLengthLoop (d: Dictionary<int, int>) (n: int) =
+    let mutable (m: int64) = n
+    let mutable lengthSoFar = 1
+
+    while m <> 1 do
+        if m <= n && d.ContainsKey (int32 m) then
+            lengthSoFar <- lengthSoFar + d[int32 m] - 1
+            m <- 1
+        else
+            let m1 =
+                if m % 2L = 0 then
+                    m / 2L
+                else
+                    3L * m + 1L
+            m <- m1
+            lengthSoFar <- lengthSoFar + 1
+
+    d[n] <- lengthSoFar
+    lengthSoFar
 
 
 type Problems(_output: ITestOutputHelper) =
     [<Fact>]
-    member this.``Collatz sequence length``() =
+    member this.``Collatz sequence length (recursive)``() =
         let cache = Dictionary<int, int>()
-
-        test <@ 13 |> collatzSequenceLength cache = 10 @>
-        test <@ cache.Count = 9 @>
+        test <@ 13 |> collatzSequenceLengthRec cache = 10 @>
         test <@ cache[13] = 10 @>
+        test <@ 160 |> collatzSequenceLengthRec cache = 11 @>
+        test <@ 60975 |> collatzSequenceLengthRec cache = 335 @>
+        test <@ 77031 |> collatzSequenceLengthRec cache = 351 @>
 
     [<Fact>]
-    member this.``Longest Collatz sequence``() =
-        let max = 200000
+    member this.``Collatz sequence length (loop)``() =
+        let cache = Dictionary<int, int>()
+        test <@ 13 |> collatzSequenceLengthLoop cache = 10 @>
+        test <@ cache[13] = 10 @>
+        test <@ 160 |> collatzSequenceLengthLoop cache = 11 @>
+        test <@ 60975 |> collatzSequenceLengthLoop cache = 335 @>
+        test <@ 77031 |> collatzSequenceLengthLoop cache = 351 @>
+
+    [<Fact>]
+    member this.``Longest Collatz sequence (recursive)``() =
+        let max = 1000000
 
         let cache = Dictionary<int, int>()
         let cs =
             [1 .. max]
-            |> List.map(collatzSequenceLength cache)
-            |> List.sort
+            |> List.map(fun n -> (n, collatzSequenceLengthRec cache n))
+            |> List.sortBy snd
             |> List.rev
 
         let longest = cs |> List.head
-        test <@ longest = 351  @>
+        test <@ longest = (837799, 525)  @>
+
+        test <@ cache.Count = max @>
+
+    [<Fact>]
+    member this.``Longest Collatz sequence (loop)``() =
+        let max = 1000000
+
+        let cache = Dictionary<int, int>()
+        let cs =
+            [1 .. max]
+            |> List.map(fun n -> (n, collatzSequenceLengthLoop cache n))
+            |> List.sortBy snd
+            |> List.rev
+
+        let longest = cs |> List.head
+        test <@ longest = (837799, 525)  @>
 
         test <@ cache.Count = max @>
 
