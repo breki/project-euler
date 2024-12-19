@@ -18,11 +18,12 @@
         <Compile Include="Problem9.fs"/>
         <Compile Include="Problem10.fs"/>
         <Compile Include="Problem11.fs"/>
-        <Compile Include="Problem12.fs" />
-        <Compile Include="Problem13.fs" />
-        <Compile Include="Problem14.fs" />
-        <Compile Include="Problem15.fs" />
-        <Compile Include="Problem16.fs" />
+        <Compile Include="Problem12.fs"/>
+        <Compile Include="Problem13.fs"/>
+        <Compile Include="Problem14.fs"/>
+        <Compile Include="Problem15.fs"/>
+        <Compile Include="Problem16.fs"/>
+        <Compile Include="Problem17.fs"/>
         <Compile Include="Program.fs"/>
     </ItemGroup>
 
