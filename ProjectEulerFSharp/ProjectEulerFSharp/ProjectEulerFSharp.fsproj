@@ -8,6 +8,11 @@
         <IsTestProject>true</IsTestProject>
     </PropertyGroup>
 
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+        <WarningLevel>4</WarningLevel>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    </PropertyGroup>
+
     <ItemGroup>
         <Compile Include="Problems.fs"/>
         <Compile Include="Problem4.fs"/>
@@ -24,6 +29,8 @@
         <Compile Include="Problem15.fs"/>
         <Compile Include="Problem16.fs"/>
         <Compile Include="Problem17.fs"/>
+        <Compile Include="Problem18.fs"/>
+        <Compile Include="ProblemTemplate.fs"/>
         <Compile Include="Program.fs"/>
     </ItemGroup>
 
