@@ -30,6 +30,7 @@
         <Compile Include="Problem16.fs"/>
         <Compile Include="Problem17.fs"/>
         <Compile Include="Problem18_67.fs"/>
+        <Compile Include="Problem19.fs"/>
         <Compile Include="ProblemTemplate.fs"/>
         <Compile Include="Program.fs"/>
     </ItemGroup>
