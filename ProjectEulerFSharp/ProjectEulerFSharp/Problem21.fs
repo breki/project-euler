@@ -17,7 +17,7 @@ let divisors (n: int) =
 
 let properDivisors n = divisors n |> Set.remove n
 
-let sumOfDivisors n =
+let sumOfProperDivisors n =
     properDivisors n |> Array.ofSeq |> Array.sum
 
 type Problems(_output: ITestOutputHelper) =
@@ -49,10 +49,10 @@ type Problems(_output: ITestOutputHelper) =
     member this.``amicable numbers``() =
         let max = 9999
 
-        let divisorsSums = [| 0..max |] |> Array.map sumOfDivisors
+        let divisorsSums = [| 0..max |] |> Array.map sumOfProperDivisors
 
-        test <@ sumOfDivisors 220 = 284 @>
-        test <@ sumOfDivisors 284 = 220 @>
+        test <@ sumOfProperDivisors 220 = 284 @>
+        test <@ sumOfProperDivisors 284 = 220 @>
 
         let isAmicable n =
             let n' = divisorsSums[n]
